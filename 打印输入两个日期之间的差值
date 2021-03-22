@@ -1,0 +1,73 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<iostream>
+#include<string.h>
+using namespace std;
+#define _for(a,b,i) for(int i=a;i<b;i++)
+int month[12][2]={{31,31},{28,29},{31,31},{30,30},{31,31},{30,30},{31,31},{31,31},{30,30},{31,31},{30,30},{31,31}};
+bool isLeap(int y){
+   
+    return ((y%4==0 && y%100!=0) || (y%400 == 0));
+   
+}
+int getYear(int y){
+    return y/10000;
+}
+int getMonth(int m){
+    return (m%10000)/100;
+}
+int getDay(int d){
+    return d%100;
+}
+int main(){
+    int date[2];int cou,y1,y2,m1,m2,d1,d2;
+    FILE *fp;
+    if(!(fp = fopen("1.txt","r"))){//同一个目录下
+        printf("Can't open file!");
+        exit(1);
+    }
+    while(!feof(fp)){
+        fscanf(fp,"%d %d",&date[0],&date[1]);
+    }
+    fclose(fp);
+    cou=0;
+    if(date[0]>date[1]){
+        int temp=date[0];
+        date[0]=date[1];
+        date[1]=temp;
+    }
+    y1=getYear(date[0]);
+    y2=getYear(date[1]);
+    m1=getMonth(date[0]);
+    m2=getMonth(date[1]);
+    d1=getDay(date[0]);
+    d2=getDay(date[1]);
+
+
+    _for(y1,y2-1,i){//加年到的位置到y2-1
+        if(isLeap(y1))
+            cou+=366;
+        else if(!isLeap(y1))
+            cou+=365;
+        y1++;
+    }
+    //printf("%d %d %d %d %d %d ",y1,y2,m1,m2,d1,d2);
+    //cout<<month[m1-1][isLeap(y1)];
+    while((y1!=y2)||(m1!=m2)||(d1!=d2)){
+        d1++;
+
+        if(month[m1-1][isLeap(y1)]<d1){
+            m1++;
+            if(m1>12){
+                y1++;
+                m1=1;
+            }
+            d1=1;
+        }
+        cou++;
+        
+    }
+    cout<<++cou;
+    return 0;
+}
