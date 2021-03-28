@@ -1,0 +1,121 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<iostream>
+#include<string.h>
+#include<vector>
+#include<stack>
+#include<algorithm>
+using namespace std;
+#define _for(a,b,i) for(int i=a;i<b;i++)
+struct bnum{
+    int len;
+    int data[10001];
+    bnum(){
+        len = 0;
+        memset(data,0,sizeof(data));
+    }
+};
+void print(bnum a){
+    for(int i=a.len-1;i>=0;i--){
+        printf("%d",a.data[i]);
+    }
+    cout<<endl;
+}
+bnum change(char *c){
+    bnum a;
+    int l=strlen(c);
+    for(int i=l-1;i>=0;i--){
+        a.data[a.len] = int(c[i] - '0');
+        a.len++;
+    }
+    //print(a);
+    return a;
+}
+bool cmp(int a,int b){
+    return a>b;
+}
+bnum add(bnum &a,bnum &b){
+    int carry=0,res,temp;
+    bnum c;
+    for(int i=0;i<a.len || i<b.len;i++){
+            temp=(a.data[i]+b.data[i]+carry);
+            c.data[c.len++] = temp%10;
+            carry = temp/10;
+            }
+    if(carry != 0){
+        c.data[c.len++] = carry;
+    }
+    return c;
+}
+bnum minus1(bnum &a,bnum &b){//a为被减数，b为减数
+    bnum c;
+    int p,temp;//借位
+    for(int i=0;i<a.len || i<b.len;i++){
+        if(a.data[i]<b.data[i]) //从高位借位
+        {
+            a.data[i+1]--;
+            a.data[i] += 10;
+
+        }
+
+        c.data[c.len++] = a.data[i] - b.data[i];
+    }
+    if(c.data[c.len-1] == 0)
+        c.len--;
+    return c;
+
+}
+bnum multi(int a,bnum &b){
+    bnum c;int p = 0,temp;//p为进位
+    for(int i=0;i<b.len;i++){
+       temp = b.data[i] * a + p;//每一位临时结果
+       c.data[c.len++] = temp % 10;//
+       p = temp / 10;//进位
+    }
+    while(p != 0){//最后可能还有进位
+        c.data[c.len++] = p%10;
+        p = p/10;
+    }
+    return c;
+}
+bnum divide(int a,bnum &b,int &r){//r为余数
+    bnum c;
+    c.len = b.len;//商和被除数位数相等
+    for(int i=b.len-1;i>=0;i--){
+        r = r*10+b.data[i];
+        if(r < a) c.data[i]=0;//不够除，该位为0
+        else{//够除
+            c.data[i] = r / a;//商
+            r = r % a;//新余数
+        }
+    }
+    while(c.len>=1 && c.data[c.len-1] == 0){//去除高位0同时保持至少一位最低位
+        c.len--;
+    }
+
+    return c;
+}
+int main(){
+    FILE *fp;
+    char a[100],b[100];
+    if(!(fp=fopen("1.txt","r"))){
+        printf("File open error!");
+        exit(1);
+    }
+    fscanf(fp,"%s %s",a,b);
+    fclose(fp);
+    int lef = 0;
+    bnum n1=change(a);
+    bnum n2=change(b);
+    bnum result1 = add(n1,n2);
+    bnum result2 = minus1(n2,n1);
+    bnum result3 = multi(10,n1);
+    bnum result4 = divide(10,n1,lef);
+    print(result1);
+    print(result2);
+    print(result3);
+    print(result4);
+
+    return 0;
+}
