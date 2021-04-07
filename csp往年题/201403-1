@@ -1,0 +1,30 @@
+#include<iostream>
+#include<stdio.h>
+#include<vector>
+#include<math.h>
+#include<algorithm>
+using namespace std;
+int main()
+{
+    vector <int> vec(2002,0);//用0-2000 存储-1000-1000
+    int n,times=0;
+    cin>>n;
+    for(int i=0,t;i<n;i++)
+    {
+        cin>>t;
+        if(t >=0)
+        {
+            ++vec[t+1000];
+            if(vec[1000-t] == 1)
+                times++;
+        }
+        else
+        {
+            ++vec[1000+t];
+            if(vec[abs(t)+1000] == 1)
+                times++;
+        }
+    }
+    cout<<times<<endl;
+    return 0;
+}
