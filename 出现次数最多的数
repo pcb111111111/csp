@@ -1,0 +1,20 @@
+#include<stdio.h>
+#include<iostream>
+#include<vector>
+using namespace std;
+int main()
+{
+    vector<int> vec(10001,0);
+    int n,num = 0,times = 0;//num记录出现次数最多的数，times记录出现最多的数的次数
+    cin>>n;
+    for(int i=0,temp;i<n;i++)
+    {
+        scanf("%d",&temp);
+        ++vec[temp];//出现次数加一
+        if(vec[temp] == times && temp < num) num = temp;//出现次数相同中选择数字较小的那个
+        if(vec[temp] > times) times = vec[temp],num = temp;//更新附和条件的数
+    }
+    cout<<num<<endl;
+    return 0;
+
+}
